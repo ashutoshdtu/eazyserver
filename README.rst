@@ -3,10 +3,6 @@ eazyserver
 ==========
 
 
-.. image:: https://travis-ci.org/ashutoshdtu/eazyserver.svg?branch=master
-    :target: https://travis-ci.org/ashutoshdtu/eazyserver
-    :alt: Build Status
-
 .. image:: https://img.shields.io/pypi/v/eazyserver.svg
         :target: https://pypi.python.org/pypi/eazyserver
 

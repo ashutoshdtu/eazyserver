@@ -11,6 +11,12 @@ with open('README.rst') as readme_file:
 with open('HISTORY.rst') as history_file:
     history = history_file.read()
 
+with open('AUTHORS.rst') as authors_file:
+    authors = authors_file.read()
+
+with open('CONTRIBUTING.rst') as contributing_file:
+    contributing = contributing_file.read()
+
 requirements = ['Click>=6.0', ]
 with open('requirements_dev.txt') as f:
     requirments = f.read().splitlines()
@@ -43,7 +49,7 @@ setup(
     },
     install_requires=requirements,
     license="MIT license",
-    long_description=readme + '\n\n' + history,
+    long_description=readme + '\n\n' + authors + '\n\n' + history + '\n\n' + contributing,
     include_package_data=True,
     keywords='eazyserver',
     name='eazyserver',
@@ -52,6 +58,6 @@ setup(
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/ashutoshdtu/eazyserver',
-    version='0.1.0',
+    version='0.1.1',
     zip_safe=False,
 )
