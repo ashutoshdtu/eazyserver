@@ -4,6 +4,10 @@
 """The setup script."""
 
 from setuptools import setup, find_packages
+import os
+
+with open('VERSION') as version_file:
+    version = version_file.read().strip()
 
 with open('README.rst') as readme_file:
     readme = readme_file.read()
@@ -54,10 +58,11 @@ setup(
     keywords='eazyserver',
     name='eazyserver',
     packages=find_packages(include=['eazyserver']),
+    include_package_data=True,
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
     url='https://github.com/ashutoshdtu/eazyserver',
-    version='0.1.3',
+    version=version,
     zip_safe=False,
 )

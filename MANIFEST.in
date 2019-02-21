@@ -1,9 +1,12 @@
+graft eazyserver
+
 include AUTHORS.rst
 include CONTRIBUTING.rst
 include HISTORY.rst
 include LICENSE
 include README.rst
 include requirements_dev.txt
+include VERSION
 
 recursive-include tests *
 recursive-exclude * __pycache__
