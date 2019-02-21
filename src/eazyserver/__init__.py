@@ -6,9 +6,9 @@ import os
 BASE_DIR=os.path.dirname(os.path.abspath(__file__))
 SETTINGS_INI = os.path.join(BASE_DIR, 'settings.ini')
 LOGGER_CONFIG = os.path.join(BASE_DIR, 'logger.conf')
-VERSION_FILE = os.path.join(BASE_DIR, 'VERSION')
-with open('VERSION') as version_file:
-    version = version_file.read().strip()
+# VERSION_FILE = os.path.join(BASE_DIR, 'VERSION')
+# with open('VERSION') as version_file:
+#     version = version_file.read().strip()
 
 
 __author__ = """Ashutosh Mishra"""
