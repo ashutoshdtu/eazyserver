@@ -13,7 +13,7 @@ LOGGER_CONFIG = os.path.join(BASE_DIR, 'logger.conf')
 
 __author__ = """Ashutosh Mishra"""
 __email__ = 'ashutoshdtu@gmail.com'
-__version__ = '0.1.5'
+__version__ = '0.1.6'
 
 
 import logging
@@ -23,9 +23,6 @@ logging.config.fileConfig(LOGGER_CONFIG)
 logger = logging.getLogger(__name__)
 logger.info("Loaded " + __name__)
 
-
-from jsonrpcserver import methods
-from jsonrpcserver.exceptions import *
 
 import core
 import rpc

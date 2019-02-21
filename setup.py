@@ -24,7 +24,7 @@ with open('CONTRIBUTING.rst') as contributing_file:
 
 requirements = ['Click>=6.0', ]
 with open('requirements_dev.txt') as f:
-    requirments = f.read().splitlines()
+    requirements = f.read().splitlines()
 
 setup_requirements = [ ]
 
