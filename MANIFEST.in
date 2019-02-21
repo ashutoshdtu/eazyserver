@@ -1,4 +1,4 @@
-graft eazyserver
+graft src
 
 include AUTHORS.rst
 include CONTRIBUTING.rst
