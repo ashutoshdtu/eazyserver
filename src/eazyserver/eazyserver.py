@@ -70,7 +70,7 @@ class Eazy(Eve, Events):
                 self.config.from_pyfile(config_file)
         
         # 4. Loads user provided settings file from environment variable
-        if 'CONFIG_FILE' in self.config['CONFIG_FILE'] and os.path.isfile(self.config['CONFIG_FILE']): 
+        if 'CONFIG_FILE' in self.config and os.path.isfile(self.config['CONFIG_FILE']): 
             self.config.from_pyfile(self.config['CONFIG_FILE']) 
         
     def load_blueprints(self):
