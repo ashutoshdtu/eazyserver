@@ -4,7 +4,7 @@
 
 __author__ = """Ashutosh Mishra"""
 __email__ = 'ashutoshdtu@gmail.com'
-__version__ = '0.1.0'
+__version__ = '0.1.3'
 
 
 import os

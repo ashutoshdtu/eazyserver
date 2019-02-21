@@ -63,15 +63,15 @@ class Eazy(Eve, Events):
         for a in os.environ: 
             if(a.startswith(env_prefix)):
                 self.config[a[len(env_prefix):]] = os.getenv(a)
-        
-        # 3. Loads user provided settings file from environment variable
-        if self.config['CONFIG_FILE']: 
-            self.config.from_pyfile(self.config['CONFIG_FILE']) 
 
-        # 4. Loads user provided settings file
+        # 3. Loads user provided settings file
         for config_file in configs:
             if os.path.isfile(config_file):
                 self.config.from_pyfile(config_file)
+        
+        # 4. Loads user provided settings file from environment variable
+        if self.config['CONFIG_FILE']: 
+            self.config.from_pyfile(self.config['CONFIG_FILE']) 
         
     def load_blueprints(self):
         if self.config["ENABLE_SWAGGER_ROUTES"]:
