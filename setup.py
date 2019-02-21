@@ -5,6 +5,7 @@
 
 from setuptools import setup, find_packages
 import os
+import glob
 
 with open('VERSION') as version_file:
     version = version_file.read().strip()
@@ -58,7 +59,8 @@ setup(
     keywords='eazyserver',
     name='eazyserver',
     packages=find_packages(include=['eazyserver']),
-    include_package_data=True,
+    package_dir={"": "eazyserver"},
+    py_modules=[os.path.splitext(os.path.basename(i))[0] for i in glob.glob("eazyserver/*.py")],
     setup_requires=setup_requirements,
     test_suite='tests',
     tests_require=test_requirements,
