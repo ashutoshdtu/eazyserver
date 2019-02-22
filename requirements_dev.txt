@@ -17,4 +17,4 @@ jsonrpcserver==4.0.1
 marshmallow==2.18.1
 gunicorn==19.9.0
 flatten_json==0.1.6
-influxdb==5.0.0
+influxdb==5.2.1
