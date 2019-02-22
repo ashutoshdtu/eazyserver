@@ -49,7 +49,7 @@ class Eazy(Eve, Events):
         
         self.load_eazy_config(configs, env_prefix)
         self.logger = logger
-        # self.load_blueprints()
+        self.load_blueprints()
         
 
     def load_eazy_config(self, configs, env_prefix):
@@ -83,4 +83,11 @@ class Eazy(Eve, Events):
         if self.config["ENABLE_HEALTH_ROUTES"]:
             self.register_blueprint(health_bp)
         if self.config["ENABLE_JSONRPC_ROUTES"]:
-            self.register_blueprint(jsonrpc_bp)
+            rpc_route = '/' + self.config["API_VERSION"] + '/' + self.config["RPC_BASE_ROUTE"] + '/' + self.config["RPC_ROUTE_NAME"]
+            self.add_url_rule(
+                rpc_route, "call_rpc", view_func=call_rpc, methods=["POST", "OPTIONS"]
+            )
+            self.add_url_rule(
+                rpc_route, "list_rpc", view_func=list_rpc, methods=["POST", "OPTIONS"]
+            )
+            # self.register_blueprint(jsonrpc_bp)
