@@ -88,6 +88,6 @@ class Eazy(Eve, Events):
                 rpc_route, "call_rpc", view_func=call_rpc, methods=["POST", "OPTIONS"]
             )
             self.add_url_rule(
-                rpc_route, "list_rpc", view_func=list_rpc, methods=["POST", "OPTIONS"]
+                rpc_route, "list_rpc", view_func=list_rpc, methods=["GET", "OPTIONS"]
             )
             # self.register_blueprint(jsonrpc_bp)
