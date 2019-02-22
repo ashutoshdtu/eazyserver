@@ -17,6 +17,9 @@ eazyserver
      :target: https://pyup.io/repos/github/ashutoshdtu/eazyserver/
      :alt: Updates
 
+.. image:: https://pyup.io/repos/github/ashutoshdtu/eazyserver/python-3-shield.svg
+     :target: https://pyup.io/repos/github/ashutoshdtu/eazyserver/
+     :alt: Python 3
 
 A simple python web framework for creating RESTful and JSON-RPC services
 

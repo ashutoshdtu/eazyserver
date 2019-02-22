@@ -48,9 +48,8 @@ class Eazy(Eve, Events):
         super(Eazy, self).__init__(import_name, **kwargs)
         
         self.load_eazy_config(configs, env_prefix)
-        self.register_blueprint(swagger)
         self.logger = logger
-        self.load_blueprints()
+        # self.load_blueprints()
         
 
     def load_eazy_config(self, configs, env_prefix):
