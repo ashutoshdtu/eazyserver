@@ -14,7 +14,7 @@ flask>=1.0
 python-socketio==3.1.2
 flask-socketio==3.3.1
 jsonrpcserver==4.0.1
-marshmallow==2.16.3
+marshmallow==2.18.1
 gunicorn==19.9.0
 flatten_json==0.1.6
 influxdb==5.0.0
