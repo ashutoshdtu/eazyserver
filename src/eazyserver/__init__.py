@@ -13,20 +13,19 @@ LOGGER_CONFIG = os.path.join(BASE_DIR, 'logger.conf')
 
 __author__ = """Ashutosh Mishra"""
 __email__ = 'ashutoshdtu@gmail.com'
-__version__ = '0.1.11'
+__version__ = '0.1.12'
 
 
 import logging
 import logging.config
-print "Logger config location", LOGGER_CONFIG
 logging.config.fileConfig(LOGGER_CONFIG)
 logger = logging.getLogger(__name__)
-logger.info("Loaded " + __name__)
+logger.debug("Loaded " + __name__)
 
 
 import core
 import rpc
-import blueprints
+# import blueprints
 
 from exceptions import *
 from eazyserver import Eazy

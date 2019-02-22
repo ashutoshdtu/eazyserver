@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logger.info("Loaded " + __name__)
+logger.debug("Loaded " + __name__)
 
 import json
 from ..rpc import methods
@@ -14,5 +14,5 @@ def __list_methods():
 
 @methods.add
 def __ping():
-    logger.info("Inside Ping Pong")
+    logger.debug("Inside Ping Pong")
     return 'pong'

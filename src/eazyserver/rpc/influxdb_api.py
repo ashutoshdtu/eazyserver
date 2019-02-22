@@ -1,6 +1,6 @@
 import logging
 logger = logging.getLogger(__name__)
-logger.info("Loaded " + __name__)
+logger.debug("Loaded " + __name__)
 
 from ..rpc import methods
 from eazyserver.core import write_points

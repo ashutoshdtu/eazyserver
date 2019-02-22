@@ -4,7 +4,7 @@
 
 import logging
 logger = logging.getLogger(__name__)
-logger.info("Loaded " + __name__)
+logger.debug("Loaded " + __name__)
 
 import os
 
@@ -15,7 +15,6 @@ from eve_swagger import swagger, add_documentation
 from eve.io.mongo import Mongo, Validator, GridFSMediaStorage
 
 from rpc import methods
-from blueprints import *
 
 class Eazy(Eve, Events):
     
@@ -74,6 +73,8 @@ class Eazy(Eve, Events):
             self.config.from_pyfile(self.config['CONFIG_FILE']) 
         
     def load_blueprints(self):
+        from blueprints import *
+
         if self.config["ENABLE_SWAGGER_ROUTES"]:
             self.register_blueprint(swagger)
         if self.config["ENABLE_INDEX_ROUTES"]:
@@ -82,5 +83,5 @@ class Eazy(Eve, Events):
             self.register_blueprint(config_bp)
         if self.config["ENABLE_HEALTH_ROUTES"]:
             self.register_blueprint(health_bp)
-        # if self.config["ENABLE_JSONRPC_ROUTES"]:
-        #     self.register_blueprint(jsonrpc_bp)
+        if self.config["ENABLE_JSONRPC_ROUTES"]:
+            self.register_blueprint(jsonrpc_bp)
