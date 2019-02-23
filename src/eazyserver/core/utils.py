@@ -3,7 +3,11 @@ logger = logging.getLogger(__name__)
 logger.debug("Loaded " + __name__)
 
 import json
-import HTMLParser
+import sys
+if sys.version_info[0] >= 3:
+    from html.parser import HTMLParser
+else:
+    import HTMLParser
 from bson import json_util
 from bson.son import SON
 from bson.objectid import ObjectId
