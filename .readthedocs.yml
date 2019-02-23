@@ -1,4 +1,10 @@
+# Build all formats
+version: 2
+
+formats: all
+
 python:
-    pip_install: true
-    extra_requirements:
-        - docs
+  version: 3.7
+  install:
+     - method: pip
+       path: .
