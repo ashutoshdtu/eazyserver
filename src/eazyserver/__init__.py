@@ -23,9 +23,7 @@ logger = logging.getLogger(__name__)
 logger.debug("Loaded " + __name__)
 
 
-import core
-import rpc
-# import blueprints
-
+from core import *
+from rpc import *
 from exceptions import *
 from eazyserver import Eazy
