@@ -56,4 +56,4 @@ This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypack
 
 .. _Cookiecutter: https://github.com/audreyr/cookiecutter
 .. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
-.. _`MIT license`: https://github.com/audreyr/cookiecutter/blob/master/LICENSE
+.. _`MIT license`: https://github.com/ashutoshdtu/eazyserver/blob/master/LICENSE
