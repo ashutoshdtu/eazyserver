@@ -22,5 +22,4 @@ logging.config.fileConfig(LOGGER_CONFIG)
 logger = logging.getLogger(__name__)
 logger.debug("Loaded " + __name__)
 
-from exceptions import *
 from eazyserver import Eazy
