@@ -14,8 +14,8 @@ from eve import Eve
 from eve_swagger import swagger, add_documentation
 from eve.io.mongo import Mongo, Validator, GridFSMediaStorage
 
-from rpc import methods
-from blueprints import *
+from .rpc import methods
+from .blueprints import *
 
 class Eazy(Eve, Events):
     

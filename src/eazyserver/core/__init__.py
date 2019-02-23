@@ -5,6 +5,6 @@ logger.debug("Loaded " + __name__)
 # from ..core.function_mapper import FunctionMapper 
 # mongo_pipelines = FunctionMapper()
 
-from function_mapper import *
-from utils import *
-from influxdb_connector import *
+from .function_mapper import *
+from .utils import *
+from .influxdb_connector import *
