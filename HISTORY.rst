@@ -2,7 +2,7 @@
 History
 =======
 
-0.2.4 (2019-02-23)
+0.2.5 (2019-02-23)
 ------------------
 
 * Cross-platform: Windows, Mac, and Linux are officially supported.

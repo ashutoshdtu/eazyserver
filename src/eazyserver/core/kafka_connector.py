@@ -28,7 +28,7 @@ def kafka_to_dict(kafka_msg):
 def dict_to_kafka(output,source_data):
 	for data in source_data:
 		if output["source_id"] == data["_id"]:
-			output["_kafka_source_id"] = msg["_kafka__id"]
+			output["_kafka_source_id"] = data["_kafka__id"]
 			break
 	kafka_msg = dict_to_binary(json.dumps(output))
 	return kafka_msg
