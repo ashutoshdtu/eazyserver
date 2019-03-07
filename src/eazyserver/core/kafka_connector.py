@@ -58,7 +58,7 @@ def formatOutput(output,behavior,source_data):
 					break
 
 	if "_created" not in output: 		
-		logger.info("{} | source_id  {} not found for id {}".format(output["_producer"],output["source_id"],output["_id"])
+		logger.info("{} | source_id  {} not found for id {}".format(output["_producer"],output["source_id"],output["_id"]))
 		output["_created"] = output["_updated"]
 		
 	return output
