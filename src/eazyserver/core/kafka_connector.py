@@ -2,9 +2,9 @@ import logging
 logger = logging.getLogger(__name__)
 logger.debug("Loaded " + __name__)
 
-import sys
-import time
 import json
+from bson.objectid import ObjectId
+from datetime import datetime
 
 from kafka import KafkaProducer
 from kafka import KafkaConsumer
@@ -21,7 +21,48 @@ def binary_to_dict(the_binary):
 	# d = json.loads(jsn)  
 	return jsn
 
+def kafka_to_dict(kafka_msg):
+	msg = json.loads(binary_to_dict(kafka_msg.value))
+	kafka_msg_id = "{id}:{topic}:{partition}:{offset}".format({ "id":msg["_id"],"offset":kafka_msg.offset, "partition": kafka_msg.partition, "topic":kafka_msg.topic })
+	msg["_kafka__id"]= kafka_msg_id
+	return msg
 	
+def dict_to_kafka(dictData,source_data):
+	
+	kafka_source_id
+	kafka_msg = dict_to_binary(json.dumps(output))
+	return
+
+# TODO: Move/Add formatOutput to behaviour base class 
+# Created following fields in output dict if missing:
+# _id,_created,_updated,source_id,_type,_producer
+def formatOutput(output,behavior,source_data): 
+	if "_id" not in output: output["_id"] = str(ObjectId())
+	if "_updated" not in output: output["_updated"] = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
+	if "_type" not in output: output["_type"] = "BEHAVIOUR"		#TODO take from behavior object
+	if "_producer" not in output: output["_producer"] = "{}:{}:{}".format(behavior.__class__.__name__,"1.0",behavior.id) #name:version:id #TODO take version from behaviour
+
+	# Source chaining for stream
+	if "source_id" not in output: 
+		if source_data: # Select rightmost consumer
+			output["source_id"] = source_data[-1]["_id"]
+		else:  # This is Producer
+			output["source_id"] = output["_id"]
+	if "_created" not in output: 
+		if output["source_id"] is None or output["source_id"] == output["_id"]:
+			output["_created"] = output["_updated"]
+		else:
+			for data in source_data:
+				if output["source_id"] == data["_id"]:
+					output["_created"] = data["_created"]
+					break
+
+	if "_created" not in output: 		
+		logger.info("{} | source_id  {} not found for id {}".format(output["_producer"],output["source_id"],output["_id"])
+		output["_created"] = output["_updated"]
+		
+	return output
+
 class KafkaConnector(object):
 	Type = "KafkaConnector"
 	def __init__(self, Behaviour, producer_topic=None, consumer_topic=None, consumer_topic2=None, kafka_broker="localhost:9092", sync_consumer=True):
@@ -57,43 +98,51 @@ class KafkaConnector(object):
 		while True:
 			if(self.consumer): # Check at least primary consumer is present
 				logger.info("Consumed | {} | Topic : {}".format(self.behavior.__class__.__name__, self.consumer_topic))
-				msg = next(self.consumer)
-				msg_params = { "_offset":msg.offset, "_timestamp":msg.timestamp, "_partition": msg.partition, "_topic":msg.topic }
-				msg = json.loads(binary_to_dict(msg.value))
+				kafka_msg = next(self.consumer)
+				msg = kafka_to_dict(kafka_msg)
+			else:
+				msg = None
 
-			if(self.consumer2): #chech for two consumers		
+			if(self.consumer2): # check for two consumers		
 				try:
 					if(self.sync_consumer):
-						msg2 = json.loads(binary_to_dict(next(self.consumer2).value))
+						kafka_msg = next(self.consumer2)
+						msg2 = kafka_to_dict(kafka_msg)
 						assert msg2["_id"] == msg["source_id"]
 					else:
 						msg2_raw = self.consumer2.poll(max_records=1)
 
 						if msg2_raw:
-							msg2 = json.loads(binary_to_dict(msg2_raw.values()[0][0].value))
-							
+							msg2 = kafka_to_dict(msg2_raw.values()[0][0])							
 						else:
 							msg2 = None
 				except AssertionError:
 
 					logger.info("Syncing Partition...")
+					kafka_source_id = msg["_kafka_source_id"]			#"{id}:{topic}:{partition}:{offset}"
+					topicName = kafka_source_id.split(":")[-3] 			# 3rd last 
+					partitionName = int(kafka_source_id.split(":")[-2]) # 3rd last
+					offset =  int(kafka_source_id.split(":")[-1])
+					partition = TopicPartition(topic=topicName, partition=partitionName) 
 
-					_partition = TopicPartition(topic=msg["_CameraTopic"], partition=msg["_CameraPartition"]) 
-					_offset = msg["_CameraOffset"]
+					logger.debug("Partition : " + str(partition))
 
-					logger.debug("Partition : " + str(_partition))
+					self.consumer2.seek(partition,offset)
+					msg2 = kafka_to_dict(next(self.consumer2))
 
-					self.consumer2.seek(_partition,_offset)
-					msg2 = json.loads(binary_to_dict(next(self.consumer2).value))
-
-				output = self.behavior.run(msg, msg2, msg_params)
+				output = self.behavior.run(msg, msg2)
 			elif(self.consumer): # One consumer only
-				output = self.behavior.run(msg, msg_params)
+				output = self.behavior.run(msg)
 			else: # Not even primary consumer present, producer only behaviour
 				output = self.behavior.run()
+			
+			# Transform output to fill missing fields 
+			source_data = []
+			if self.consumer: source_data.append(msg)
+			if self.consumer2: source_data.append(msg2)
+			output=formatOutput(output,self.behavior,source_data)
 
 			if(self.producer):
 				logger.info("Produced | {} | Topic : {}".format(self.behavior.__class__.__name__, self.producer_topic))
-				# output = self.behavior.run()
 				if(output):
-					self.producer.send(topic=self.producer_topic, value=dict_to_binary(json.dumps(output)))
+					self.producer.send(topic=self.producer_topic, value=dict_to_kafka(output,source_data))
