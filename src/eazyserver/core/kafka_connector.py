@@ -12,13 +12,11 @@ from kafka import TopicPartition
 
 
 def dict_to_binary(the_dict):
-	# str = json.dumps(the_dict)
 	binary = ' '.join(format(ord(letter), 'b') for letter in the_dict)
 	return binary
 
 def binary_to_dict(the_binary):
 	jsn = ''.join(chr(int(x, 2)) for x in the_binary.split())
-	# d = json.loads(jsn)  
 	return jsn
 
 def kafka_to_dict(kafka_msg):
@@ -27,11 +25,13 @@ def kafka_to_dict(kafka_msg):
 	msg["_kafka__id"]= kafka_msg_id
 	return msg
 	
-def dict_to_kafka(dictData,source_data):
-	
-	kafka_source_id
+def dict_to_kafka(output,source_data):
+	for data in source_data:
+		if output["source_id"] == data["_id"]:
+			output["_kafka_source_id"] = msg["_kafka__id"]
+			break
 	kafka_msg = dict_to_binary(json.dumps(output))
-	return
+	return kafka_msg
 
 # TODO: Move/Add formatOutput to behaviour base class 
 # Created following fields in output dict if missing:
