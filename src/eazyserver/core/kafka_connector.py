@@ -21,7 +21,7 @@ def binary_to_dict(the_binary):
 
 def kafka_to_dict(kafka_msg):
 	msg = json.loads(binary_to_dict(kafka_msg.value))
-	kafka_msg_id = "{id}:{topic}:{partition}:{offset}".format({ "id":msg["_id"],"offset":kafka_msg.offset, "partition": kafka_msg.partition, "topic":kafka_msg.topic })
+	kafka_msg_id = "{id}:{topic}:{partition}:{offset}".format(**{ "id":msg["_id"],"offset":kafka_msg.offset, "partition": kafka_msg.partition, "topic":kafka_msg.topic })
 	msg["_kafka__id"]= kafka_msg_id
 	return msg
 	
@@ -136,11 +136,12 @@ class KafkaConnector(object):
 			else: # Not even primary consumer present, producer only behaviour
 				output = self.behavior.run()
 			
-			# Transform output to fill missing fields 
-			source_data = []
-			if self.consumer: source_data.append(msg)
-			if self.consumer2: source_data.append(msg2)
-			output=formatOutput(output,self.behavior,source_data)
+			# Transform output to fill missing fields
+			if output:
+				source_data = []
+				if self.consumer: source_data.append(msg)
+				if self.consumer2: source_data.append(msg2)
+				output=formatOutput(output,self.behavior,source_data)
 
 			if(self.producer):
 				logger.info("Produced | {} | Topic : {}".format(self.behavior.__class__.__name__, self.producer_topic))
