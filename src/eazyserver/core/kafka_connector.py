@@ -65,7 +65,7 @@ def formatOutput(output,behavior,source_data):
 
 class KafkaConnector(object):
 	Type = "KafkaConnector"
-	def __init__(self, Behaviour, producer_topic=None, consumer_topic=None, consumer_topic2=None, kafka_broker="localhost:9092", sync_consumer=True):
+	def __init__(self, Behaviour, producer_topic=None, consumer_topic=None, consumer_topic2=None, kafka_broker="localhost:9092", sync_consumer=True, auto_offset_reset='largest'):
 	# def __init__(self, Behaviour):
 		super(KafkaConnector, self).__init__()
 
@@ -76,22 +76,34 @@ class KafkaConnector(object):
 		self.sync_consumer = sync_consumer
 		self.kafka_api_version = (2, 12, 2)
 
+		logger.info("=" * 20)
+		logger.info("Kafka INIT Config : ")
+		logger.info("Behaviour : " + str(Behaviour))
+		logger.info("producer_topic : " + str(producer_topic))
+		logger.info("consumer_topic : " + str(consumer_topic))
+		logger.info("consumer_topic2 : " + str(consumer_topic2))
+		logger.info("sync_consumer : " + str(sync_consumer))
+		logger.info("auto_offset_reset : " + str(auto_offset_reset))
+		logger.info("=" * 20)
+
 		if(producer_topic):
 			self.producer = KafkaProducer(bootstrap_servers=kafka_broker, max_request_size=20000000)
 		else:
 			self.producer = None
 		
 		if(consumer_topic):
-			self.consumer = KafkaConsumer(consumer_topic, bootstrap_servers=kafka_broker)
+			self.consumer = KafkaConsumer(consumer_topic, bootstrap_servers=kafka_broker, auto_offset_reset=auto_offset_reset)
 			self.consumer.poll()
 		else:
 			self.consumer = None
 
 		if(consumer_topic2):
-			self.consumer2 = KafkaConsumer(consumer_topic2, bootstrap_servers=kafka_broker)
+			self.consumer2 = KafkaConsumer(consumer_topic2, bootstrap_servers=kafka_broker, auto_offset_reset=auto_offset_reset)
 			self.consumer2.poll()
 		else:
 			self.consumer2 = None
+
+		
 
 
 	def run(self):
