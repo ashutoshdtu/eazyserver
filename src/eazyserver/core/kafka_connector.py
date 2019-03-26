@@ -76,7 +76,8 @@ class KafkaConnector(object):
 		self.sync_consumer = sync_consumer
 		self.kafka_api_version = (2, 12, 2)
 
-		logger.info("=" * 20)
+		logger.info("\n")
+		logger.info("=" * 50)
 		logger.info("Kafka INIT Config : ")
 		logger.info("Behaviour : " + str(Behaviour))
 		logger.info("producer_topic : " + str(producer_topic))
@@ -84,7 +85,8 @@ class KafkaConnector(object):
 		logger.info("consumer_topic2 : " + str(consumer_topic2))
 		logger.info("sync_consumer : " + str(sync_consumer))
 		logger.info("auto_offset_reset : " + str(auto_offset_reset))
-		logger.info("=" * 20)
+		logger.info("=" * 50)
+		logger.info("\n")
 
 		if(producer_topic):
 			self.producer = KafkaProducer(bootstrap_servers=kafka_broker, max_request_size=20000000)
@@ -109,7 +111,7 @@ class KafkaConnector(object):
 	def run(self):
 		while True:
 			if(self.consumer): # Check at least primary consumer is present
-				logger.info("Consumed | {} | Topic : {}".format(self.behavior.__class__.__name__, self.consumer_topic))
+				logger.info("Consumer 1 | {} | Topic : {}".format(self.behavior.__class__.__name__, self.consumer_topic))
 				kafka_msg = next(self.consumer)
 				msg = kafka_to_dict(kafka_msg)
 			else:
@@ -140,6 +142,8 @@ class KafkaConnector(object):
 					logger.debug("Partition : " + str(partition))
 
 					self.consumer2.seek(partition,offset)
+
+					logger.info("Consumer 2 | {} | Topic : {}".format(self.behavior.__class__.__name__, self.consumer_topic2))
 					msg2 = kafka_to_dict(next(self.consumer2))
 
 				output = self.behavior.run(msg, msg2)
@@ -156,6 +160,6 @@ class KafkaConnector(object):
 				output=formatOutput(output,self.behavior,source_data)
 
 			if(self.producer):
-				logger.info("Produced | {} | Topic : {}".format(self.behavior.__class__.__name__, self.producer_topic))
 				if(output):
+					logger.info("Producer | {} | Topic : {}".format(self.behavior.__class__.__name__, self.producer_topic))
 					self.producer.send(topic=self.producer_topic, value=dict_to_kafka(output,source_data))
