@@ -6,9 +6,11 @@ import json
 from bson.objectid import ObjectId
 from datetime import datetime
 
-from kafka import KafkaProducer
+#from kafka import KafkaProducer
 from kafka import KafkaConsumer
 from kafka import TopicPartition
+
+from confluent_kafka import Producer as KafkaProducer
 
 
 def dict_to_binary(the_dict):
@@ -87,7 +89,7 @@ class KafkaConnector(object):
 		logger.info("=" * 20)
 
 		if(producer_topic):
-			self.producer = KafkaProducer(bootstrap_servers=kafka_broker, max_request_size=20000000)
+			self.producer = KafkaProducer({'bootstrap.servers': kafka_broker, 'message.max.bytes' : 20000000})
 		else:
 			self.producer = None
 		
@@ -155,7 +157,8 @@ class KafkaConnector(object):
 				if self.consumer2: source_data.append(msg2)
 				output=formatOutput(output,self.behavior,source_data)
 
-			if(self.producer):
+			if(self.producer_topic is not None):
 				logger.info("Produced | {} | Topic : {}".format(self.behavior.__class__.__name__, self.producer_topic))
 				if(output):
-					self.producer.send(topic=self.producer_topic, value=dict_to_kafka(output,source_data))
+					value = dict_to_kafka(output,source_data)
+					self.producer.produce(self.producer_topic, value)
