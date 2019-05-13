@@ -3,15 +3,17 @@ logger = logging.getLogger(__name__)
 logger.debug("Loaded " + __name__)
 
 import json
+import time
 from bson.objectid import ObjectId
 from datetime import datetime
 
 #from kafka import KafkaProducer
-from kafka import KafkaConsumer
-from kafka import TopicPartition
+#from kafka import KafkaConsumer
+#from kafka import TopicPartition
 
 from confluent_kafka import Producer as KafkaProducer
-
+from confluent_kafka import Consumer as KafkaConsumer
+from confluent_kafka import TopicPartition
 
 def dict_to_binary(the_dict):
 	binary = ' '.join(format(ord(letter), 'b') for letter in the_dict)
@@ -22,7 +24,7 @@ def binary_to_dict(the_binary):
 	return jsn
 
 def kafka_to_dict(kafka_msg):
-	msg = json.loads(binary_to_dict(kafka_msg.value))
+	msg = json.loads(binary_to_dict(kafka_msg.value()))
 	kafka_msg_id = "{id}:{topic}:{partition}:{offset}".format(**{ "id":msg["_id"],"offset":kafka_msg.offset, "partition": kafka_msg.partition, "topic":kafka_msg.topic })
 	msg["_kafka__id"]= kafka_msg_id
 	return msg
@@ -94,14 +96,30 @@ class KafkaConnector(object):
 			self.producer = None
 		
 		if(consumer_topic):
-			self.consumer = KafkaConsumer(consumer_topic, bootstrap_servers=kafka_broker, auto_offset_reset=auto_offset_reset)
-			self.consumer.poll()
+			self.consumer =  KafkaConsumer({ 'bootstrap.servers': 'kafka', 'group.id': 'mygroup', 'auto.offset.reset': 'smallest' })
+			self.consumer.subscribe([consumer_topic])
+			self.consumer.poll(1.0)
+
+
+			print("Waiting for 3 seconds...")
+			time.sleep(3)
+
+
+			# Seek to beginning
+#			partition = TopicPartition(consumer_topic, partition=0, offset=0)
+#			self.consumer.seek(partition)
+
+			#self.consumer = KafkaConsumer(consumer_topic, bootstrap_servers=kafka_broker, auto_offset_reset=auto_offset_reset)
+			#self.consumer.poll()
 		else:
 			self.consumer = None
 
 		if(consumer_topic2):
-			self.consumer2 = KafkaConsumer(consumer_topic2, bootstrap_servers=kafka_broker, auto_offset_reset=auto_offset_reset)
-			self.consumer2.poll()
+                        self.consumer2 =  KafkaConsumer({ 'bootstrap.servers': 'kafka', 'auto.offset.reset': 'earliest' })
+                        self.consumer.subscribe([consumer_topic2])			
+			#self.consumer.poll()
+			#self.consumer2 = KafkaConsumer(consumer_topic2, bootstrap_servers=kafka_broker, auto_offset_reset=auto_offset_reset)
+			#self.consumer2.poll()
 		else:
 			self.consumer2 = None
 
@@ -112,7 +130,7 @@ class KafkaConnector(object):
 		while True:
 			if(self.consumer): # Check at least primary consumer is present
 				logger.info("Consumed | {} | Topic : {}".format(self.behavior.__class__.__name__, self.consumer_topic))
-				kafka_msg = next(self.consumer)
+				kafka_msg = (self.consumer.consume(1)[0])
 				msg = kafka_to_dict(kafka_msg)
 			else:
 				msg = None
